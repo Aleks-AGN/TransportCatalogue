@@ -13,17 +13,17 @@ void TransportCatalogue::AddStop(const Stop& stop) {
 }
 
 const Bus* TransportCatalogue::FindBus(const std::string& name) const {
-	auto it = index_buses_.find(name);
-	return it == index_buses_.end() ? nullptr : it->second;
+    auto it = index_buses_.find(name);
+    return it == index_buses_.end() ? nullptr : it->second;
 }
 
 const Stop* TransportCatalogue::FindStop(const std::string& name) const {
-	auto it = index_stops_.find(name);
-	return it == index_stops_.end() ? nullptr : it->second;
+    auto it = index_stops_.find(name);
+    return it == index_stops_.end() ? nullptr : it->second;
 }
 
-std::tuple<size_t, size_t, size_t, double> TransportCatalogue::GetRouteInfo(const Bus* bus) const	{
-	return {bus->route_stops_count, bus->unique_stops_count, bus->route_length, bus->curvature};
+std::tuple<size_t, size_t, size_t, double> TransportCatalogue::GetRouteInfo(const Bus* bus) const {
+    return {bus->route_stops_count, bus->unique_stops_count, bus->route_length, bus->curvature};
 }
 
 void TransportCatalogue::AddBusThroughStop(const Stop* stop, const std::string& bus_number) {
@@ -41,13 +41,13 @@ void TransportCatalogue::AddDistanceBetweenStops(const std::string& from_stop, c
 
 size_t TransportCatalogue::GetDistanceBetweenStops(const std::string& from_stop, const std::string& to_stop) {
     auto it = index_distances_between_stops_.find(std::pair(FindStop(from_stop), FindStop(to_stop)));
-	
+
     if (it != index_distances_between_stops_.end()) {
-		return it->second;
-	} else {
-		it = index_distances_between_stops_.find(std::pair(FindStop(to_stop), FindStop(from_stop)));
-		return it->second;
-	}
+        return it->second;
+    } else {
+        it = index_distances_between_stops_.find(std::pair(FindStop(to_stop), FindStop(from_stop)));
+        return it->second;
+    }
 }
 
 } // namespace transport_catalogue

@@ -10,8 +10,8 @@
 namespace transport_catalogue {
 
 enum class RouteType {
-	Pendulum,
-	Circular
+    Pendulum,
+    Circular
 };
 
 struct Bus {
@@ -37,15 +37,15 @@ struct Stop {
 namespace detail {
 
 struct CompareBuses {
-	bool operator() (const Bus* lhs, const Bus* rhs) const {
-		return lhs->number < rhs->number;
-	}
+    bool operator() (const Bus* lhs, const Bus* rhs) const {
+        return lhs->number < rhs->number;
+    }
 };
 
 struct PairHash {
-	size_t operator() (const std::pair<const Stop*, const Stop*>& pair) const {
-		return pair.first->Hash() + 37 * pair.second->Hash();
-	}
+    size_t operator() (const std::pair<const Stop*, const Stop*>& pair) const {
+        return pair.first->Hash() + 37 * pair.second->Hash();
+    }
 };
 
 } // namespace detail
@@ -70,7 +70,7 @@ public:
     const std::set<const Bus*, detail::CompareBuses>* GetBusesThroughStop(const Stop* stop);
 
     void AddDistanceBetweenStops(const std::string& from_stop, const size_t distance, const std::string& to_stop);
-	
+
     size_t GetDistanceBetweenStops(const std::string& from_stop, const std::string& to_stop);
 
 private:
