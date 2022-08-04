@@ -30,7 +30,7 @@ void TransportCatalogue::AddBusThroughStop(const Stop* stop, const std::string& 
     index_buses_through_stop_[stop].emplace(FindBus(bus_number));
 }
 
-const std::set<const Bus*, detail::CompareBuses>* TransportCatalogue::GetBusesThroughStop(const Stop* stop) {
+const std::set<const Bus*, detail::CompareBuses>* TransportCatalogue::GetBusesThroughStop(const Stop* stop) const {
     auto it = index_buses_through_stop_.find(stop);
     return it == index_buses_through_stop_.end() ? nullptr : &(it->second);
 }
@@ -39,7 +39,7 @@ void TransportCatalogue::AddDistanceBetweenStops(const std::string& from_stop, c
     index_distances_between_stops_.emplace(std::pair(FindStop(from_stop), FindStop(to_stop)), distance);
 }
 
-size_t TransportCatalogue::GetDistanceBetweenStops(const std::string& from_stop, const std::string& to_stop) {
+size_t TransportCatalogue::GetDistanceBetweenStops(const std::string& from_stop, const std::string& to_stop) const {
     auto it = index_distances_between_stops_.find(std::pair(FindStop(from_stop), FindStop(to_stop)));
 
     if (it != index_distances_between_stops_.end()) {
@@ -48,6 +48,10 @@ size_t TransportCatalogue::GetDistanceBetweenStops(const std::string& from_stop,
         it = index_distances_between_stops_.find(std::pair(FindStop(to_stop), FindStop(from_stop)));
         return it->second;
     }
+}
+
+const std::unordered_map<std::string_view, const Bus*>& TransportCatalogue::GetAllBuses() const {
+    return index_buses_;
 }
 
 } // namespace transport_catalogue

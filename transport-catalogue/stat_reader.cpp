@@ -1,4 +1,6 @@
 #include "stat_reader.h"
+#include "domain.h"
+
 #include <iomanip>
 
 namespace transport_catalogue {
@@ -56,7 +58,7 @@ void ReadTransportCatalogue(TransportCatalogue& catalogue, std::istream& is, std
     
     queries.reserve(queries_count);
 
-    for (int i = 0; i < queries_count; ++i) {
+    for (size_t i = 0; i < queries_count; ++i) {
         std::getline(is, line);
         queries.emplace_back(std::move(line));
     }

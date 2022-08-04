@@ -1,38 +1,16 @@
 #pragma once
 
+#include "domain.h"
+#include "geo.h"
+
 #include <string>
 #include <deque>
 #include <unordered_map>
 #include <set>
 
-#include "geo.h"
-
 namespace transport_catalogue {
 
-enum class RouteType {
-    Pendulum,
-    Circular
-};
-
-struct Bus {
-    std::string number;
-    RouteType route_type;
-    size_t route_stops_count;
-    size_t unique_stops_count;
-    size_t route_length;
-    double curvature;
-};
-
-struct Stop {
-    std::string name;
-    geo::Coordinates point;
-
-    size_t Hash() const {
-        return std::hash<std::string>{}(name)
-               + 37 * std::hash<double>{}(point.lng)
-               + 37 * 37 * std::hash<double>{}(point.lat);
-    }
-};
+using namespace domain;
 
 namespace detail {
 
@@ -67,11 +45,13 @@ public:
 
     void AddBusThroughStop(const Stop* stop, const std::string& bus_number);
 
-    const std::set<const Bus*, detail::CompareBuses>* GetBusesThroughStop(const Stop* stop);
+    const std::set<const Bus*, detail::CompareBuses>* GetBusesThroughStop(const Stop* stop) const;
 
     void AddDistanceBetweenStops(const std::string& from_stop, const size_t distance, const std::string& to_stop);
 
-    size_t GetDistanceBetweenStops(const std::string& from_stop, const std::string& to_stop);
+    size_t GetDistanceBetweenStops(const std::string& from_stop, const std::string& to_stop) const;
+
+    const std::unordered_map<std::string_view, const Bus*>& GetAllBuses() const;
 
 private:
 
