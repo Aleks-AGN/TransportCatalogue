@@ -1,4 +1,5 @@
 #include "json_reader.h"
+#include "json_builder.h"
 #include "geo.h"
 #include <unordered_set>
 #include <sstream>
@@ -13,7 +14,7 @@ std::pair<Stop, bool> JsonReader::ParseStopRequest(const Dict& request) const {
     stop.name = request.at("name"s).AsString();
     stop.point.lat = request.at("latitude"s).AsDouble();
     stop.point.lng = request.at("longitude"s).AsDouble();
-    bool has_road_distances = !request.at("road_distances"s).AsMap().empty();
+    bool has_road_distances = !request.at("road_distances"s).AsDict().empty();
 
     return {std::move(stop), has_road_distances};
 }
@@ -22,7 +23,7 @@ void JsonReader::AddBuses(TransportCatalogue& db, const Array& base_requests,
     const std::vector<int> bus_request_ids) const {
 
     for (int id : bus_request_ids) {
-        const auto& request = base_requests.at(id).AsMap();
+        const auto& request = base_requests.at(id).AsDict();
         Bus bus;
         bus.number = request.at("name"s).AsString();
         bus.route_type = request.at("is_roundtrip"s).AsBool() ? RouteType::Circular : RouteType::Pendulum;
@@ -77,18 +78,18 @@ void JsonReader::AddRoadDistances(TransportCatalogue& db, const Array& base_requ
     const std::vector<int> stop_with_distances_request_ids) const {
 
     for (int id : stop_with_distances_request_ids) {
-        const auto& request = base_requests.at(id).AsMap();
+        const auto& request = base_requests.at(id).AsDict();
 
         std::string stop_from = request.at("name"s).AsString();
 
-        for (const auto& [stop_to, distance] : request.at("road_distances"s).AsMap()) {
+        for (const auto& [stop_to, distance] : request.at("road_distances"s).AsDict()) {
             db.AddDistanceBetweenStops(stop_from, distance.AsInt(), stop_to);
         }    
     }
 }
 
 void JsonReader::UpdateTransportCatalogue(TransportCatalogue& db) const {
-    const Array& base_requests = input_doc_.GetRoot().AsMap().at("base_requests"s).AsArray();
+    const Array& base_requests = input_doc_.GetRoot().AsDict().at("base_requests"s).AsArray();
 
     std::vector<int> stop_with_distances_request_ids;
     std::vector<int> bus_request_ids;
@@ -96,7 +97,7 @@ void JsonReader::UpdateTransportCatalogue(TransportCatalogue& db) const {
     bus_request_ids.reserve(base_requests.size());
     
     for (size_t id = 0; id < base_requests.size(); ++id) {
-        const auto& request = base_requests.at(id).AsMap();
+        const auto& request = base_requests.at(id).AsDict();
         
         if (request.at("type"s) == "Stop"s) {
             auto [stop, has_road_distances] = ParseStopRequest(request);
@@ -115,7 +116,7 @@ void JsonReader::UpdateTransportCatalogue(TransportCatalogue& db) const {
 }
 
 void JsonReader::UpdateMapRenderer(renderer::MapRenderer& renderer) const {
-    const auto& render_settings = input_doc_.GetRoot().AsMap().at("render_settings"s).AsMap();
+    const auto& render_settings = input_doc_.GetRoot().AsDict().at("render_settings"s).AsDict();
     renderer::RenderSettings settings;
     
     settings.width = render_settings.at("width").AsDouble();
@@ -171,12 +172,12 @@ void JsonReader::UpdateMapRenderer(renderer::MapRenderer& renderer) const {
 }
 
 Node JsonReader::ProcessStatRequests(RequestHandler& request_handler) const {
-    const Array& stat_requests = input_doc_.GetRoot().AsMap().at("stat_requests"s).AsArray();
+    const Array& stat_requests = input_doc_.GetRoot().AsDict().at("stat_requests"s).AsArray();
     Array responses;
     responses.reserve(stat_requests.size());
 
     for (const auto& stat_request : stat_requests) {
-        const auto& request = stat_request.AsMap();
+        const auto& request = stat_request.AsDict();
         Dict response;
         response.emplace("request_id"s, request.at("id"s).AsInt());
         std::string type = request.at("type"s).AsString();
@@ -216,7 +217,10 @@ Node JsonReader::ProcessStatRequests(RequestHandler& request_handler) const {
         }
         responses.emplace_back(response);
     }
-    return responses;
+
+    return json::Builder{}.Value(std::move(responses)).Build();
+
+    // return responses;
 }
 
 } // namespace transport_catalogue

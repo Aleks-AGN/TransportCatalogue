@@ -33,8 +33,7 @@ int main() {
 
     auto response = json_reader.ProcessStatRequests(request_handler);
 
-    //json::Print(Document{std::move(response)}, cout);
-    json::PrintWithContext(Document{std::move(response)}, cout);
+    json::Print(Document{std::move(response)}, cout);
 
     return 0;
 }
