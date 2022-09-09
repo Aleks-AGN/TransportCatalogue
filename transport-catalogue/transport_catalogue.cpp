@@ -54,4 +54,8 @@ const std::unordered_map<std::string_view, const Bus*>& TransportCatalogue::GetA
     return index_buses_;
 }
 
+const std::unordered_map<std::string_view, const Stop*>& TransportCatalogue::GetAllStops() const {
+    return index_stops_;
+}
+
 } // namespace transport_catalogue

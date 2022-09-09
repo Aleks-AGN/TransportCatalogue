@@ -53,6 +53,8 @@ public:
 
     const std::unordered_map<std::string_view, const Bus*>& GetAllBuses() const;
 
+    const std::unordered_map<std::string_view, const Stop*>& GetAllStops() const;
+
 private:
 
     std::deque<Bus> buses_;

@@ -17,8 +17,8 @@ svg::Point SphereProjector::operator()(geo::Coordinates coords) const {
 }
 
 void MapRenderer::SetRenderSettings(RenderSettings settings) {
-        render_settings_ = std::move(settings);
-    }
+    render_settings_ = std::move(settings);
+}
 
 void MapRenderer::PrintRenderSettings() const {
 

@@ -3,6 +3,7 @@
 #include "json.h"
 #include "request_handler.h"
 #include "map_renderer.h"
+#include "transport_router.h"
 
 //#include "input_reader.h"
 //#include "stat_reader.h"
@@ -24,11 +25,13 @@ int main() {
 
     TransportCatalogue db;
     renderer::MapRenderer renderer;
-
+    
     json_reader.UpdateTransportCatalogue(db);
     json_reader.UpdateMapRenderer(renderer);
 
-    RequestHandler request_handler(db, renderer);
+    router::Router router(db, json_reader.GetRoutingSettings());
+
+    RequestHandler request_handler(db, renderer, router);
     //request_handler.RenderMap().Render(cout);
 
     auto response = json_reader.ProcessStatRequests(request_handler);

@@ -171,6 +171,16 @@ void JsonReader::UpdateMapRenderer(renderer::MapRenderer& renderer) const {
     //renderer.PrintRenderSettings();
 }
 
+router::RoutingSettings JsonReader::GetRoutingSettings() const {
+    const auto& routing_settings = input_doc_.GetRoot().AsDict().at("routing_settings"s).AsDict();
+    router::RoutingSettings settings;
+
+    settings.bus_wait_time = routing_settings.at("bus_wait_time").AsInt();
+    settings.bus_velocity = routing_settings.at("bus_velocity").AsDouble();
+
+    return settings;
+}
+
 Node JsonReader::ProcessStatRequests(RequestHandler& request_handler) const {
     const Array& stat_requests = input_doc_.GetRoot().AsDict().at("stat_requests"s).AsArray();
     Array responses;
@@ -214,12 +224,28 @@ Node JsonReader::ProcessStatRequests(RequestHandler& request_handler) const {
             std::ostringstream strm;
             request_handler.RenderMap().Render(strm);
             response.emplace("map"s, std::move(strm.str()));
+        } else if (type == "Route"s) {
+            std::string from_stop_name = request.at("from"s).AsString();
+            std::string to_stop_name = request.at("to"s).AsString();
+            if (const Stop* stop_from = request_handler.GetTransportCatalogue().FindStop(from_stop_name)) {
+                if (const Stop* stop_to = request_handler.GetTransportCatalogue().FindStop(to_stop_name)) {
+                    if (auto builded_router = request_handler.BuildRoute(stop_from, stop_to)) {
+                        auto [weight, edges] = builded_router.value();
+                        response.emplace("total_time"s, std::move(weight));
+                        response.emplace("items"s, request_handler.GetEdgesItems(edges));
+                    } else {
+                        response.emplace("error_message"s, "not found"s);
+                    }
+                } else {
+                    response.emplace("error_message"s, "not found"s);
+                }
+            } else {
+                response.emplace("error_message"s, "not found"s);
+            }
         }
         responses.emplace_back(response);
     }
-
     return json::Builder{}.Value(std::move(responses)).Build();
-
     // return responses;
 }
 

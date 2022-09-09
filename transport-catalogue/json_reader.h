@@ -4,6 +4,7 @@
 #include "transport_catalogue.h"
 #include "map_renderer.h"
 #include "request_handler.h"
+#include "transport_router.h"
 
 namespace transport_catalogue {
 
@@ -18,6 +19,8 @@ public:
     void UpdateTransportCatalogue(TransportCatalogue& db) const;
 
     void UpdateMapRenderer(renderer::MapRenderer& renderer) const;
+    
+    router::RoutingSettings GetRoutingSettings() const ;
 
     Node ProcessStatRequests(RequestHandler& request_handler) const;
 
