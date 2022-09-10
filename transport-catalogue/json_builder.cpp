@@ -19,7 +19,7 @@ namespace json {
     Builder::DictItemContext::DictItemContext(Builder& builder) 
         : builder_(builder) {
     }
-    Builder::KeyContext Builder::DictItemContext::Key(std::string key) {
+    Builder::KeyContext Builder::DictItemContext::Key(const std::string& key) {
         return builder_.Key(key);
     }
     Builder& Builder::DictItemContext::EndDict() {

@@ -26,7 +26,7 @@ public:
         friend class Builder;
     public:
         DictItemContext(Builder& builder);
-        KeyContext Key(std::string key);
+        KeyContext Key(const std::string& key);
         Builder& EndDict();
     private:
         Builder& builder_;
