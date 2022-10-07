@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package renderer_serialize;
+
+message Rgba{
+    bool is_rgba = 1;
+    int32 red = 2;
+    int32 green = 3;
+    int32 blue = 4;
+    double opacity = 5;
+}
+
+message Color {
+    oneof data {
+        bool is_none = 1;
+        bytes name = 2;
+        Rgba rgba = 3;
+    }
+}
+
+message Point {
+    double x = 1;
+    double y = 2;
+}

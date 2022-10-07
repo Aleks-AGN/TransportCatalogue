@@ -58,4 +58,16 @@ const std::unordered_map<std::string_view, const Stop*>& TransportCatalogue::Get
     return index_stops_;
 }
 
+const std::deque<Bus>& TransportCatalogue::GetAllRawBuses() const {
+    return buses_;
+}
+
+const std::deque<Stop>& TransportCatalogue::GetAllRawStops() const {
+    return stops_;
+}
+
+const std::unordered_map<std::pair<const Stop*, const Stop*>, size_t, detail::PairHash>& TransportCatalogue::GetDistancesBetweenStops() const {
+    return index_distances_between_stops_;
+}
+
 } // namespace transport_catalogue

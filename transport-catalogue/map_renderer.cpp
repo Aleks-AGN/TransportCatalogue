@@ -20,6 +20,10 @@ void MapRenderer::SetRenderSettings(RenderSettings settings) {
     render_settings_ = std::move(settings);
 }
 
+const RenderSettings& MapRenderer::GetRenderSettings() const {
+    return render_settings_;
+}
+
 void MapRenderer::PrintRenderSettings() const {
 
     std::cout << "width = "s << render_settings_.width << std::endl;

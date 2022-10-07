@@ -171,14 +171,23 @@ void JsonReader::UpdateMapRenderer(renderer::MapRenderer& renderer) const {
     //renderer.PrintRenderSettings();
 }
 
-router::RoutingSettings JsonReader::GetRoutingSettings() const {
+void JsonReader::UpdateRouter(router::Router& router) const {
     const auto& routing_settings = input_doc_.GetRoot().AsDict().at("routing_settings"s).AsDict();
     router::RoutingSettings settings;
 
     settings.bus_wait_time = routing_settings.at("bus_wait_time").AsInt();
     settings.bus_velocity = routing_settings.at("bus_velocity").AsDouble();
 
-    return settings;
+    router.SetRoutingSettings(std::move(settings));
+    //router.PrintRoutingSettings();
+}
+
+JsonReader::Path JsonReader::GetSerializationSettings() const {
+    const auto& serialization_settings = input_doc_.GetRoot().AsDict().at("serialization_settings").AsDict();
+
+    Path path = serialization_settings.at("file").AsString();
+
+    return path;
 }
 
 Node JsonReader::ProcessStatRequests(RequestHandler& request_handler) const {

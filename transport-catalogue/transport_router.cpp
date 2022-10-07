@@ -7,10 +7,12 @@ namespace router {
 
 using namespace std::literals;
 
-Router::Router(const TransportCatalogue& db, const RoutingSettings settings)
-    : db_(db), routing_settings_(settings) {
-    //PrintRoutingSettings();
-    BuildGraph(db);
+void Router::SetRoutingSettings(RoutingSettings settings) {
+    routing_settings_ = std::move(settings);
+}
+
+const RoutingSettings& Router::GetRoutingSettings() const {
+    return routing_settings_;
 }
 
 void Router::BuildGraph(const TransportCatalogue& db) {
@@ -53,6 +55,23 @@ void Router::BuildGraph(const TransportCatalogue& db) {
     }
     graph_ = std::move(graph);
     router_ptr_ = new graph::Router<double>(graph_);
+}
+
+void Router::SetGraph(graph::DirectedWeightedGraph<double>&& graph) {
+    graph_ = std::move(graph);
+    router_ptr_ = new graph::Router<double>(graph_);
+}
+
+const graph::DirectedWeightedGraph<double>& Router::GetGraph() const {
+    return graph_;
+}
+
+void Router::SetStopIds(std::map<std::string, graph::VertexId>&& stop_ids) {
+    stop_ids_ = std::move(stop_ids);
+}
+
+const std::map<std::string, graph::VertexId>& Router::GetStopIds() const {
+    return stop_ids_;
 }
 
 std::optional<graph::Router<double>::RouteInfo> Router::GetRouteInfo(const Stop* from_stop, const Stop* to_stop) const {

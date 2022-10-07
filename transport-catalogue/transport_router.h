@@ -18,9 +18,23 @@ struct RoutingSettings {
 
 class Router {
 public:
-    Router(const TransportCatalogue& db, const RoutingSettings settings);
+    Router(const TransportCatalogue& db)
+        : db_(db) {
+    }
+
+    void SetRoutingSettings(RoutingSettings settings);
+
+    const RoutingSettings& GetRoutingSettings() const;
 
     void BuildGraph(const TransportCatalogue& db);
+    
+    void SetGraph(graph::DirectedWeightedGraph<double>&& graph);
+
+    const graph::DirectedWeightedGraph<double>& GetGraph() const;
+
+    void SetStopIds(std::map<std::string, graph::VertexId>&& stop_ids);
+
+    const std::map<std::string, graph::VertexId>& GetStopIds() const;
 
     std::optional<graph::Router<double>::RouteInfo> GetRouteInfo(const Stop* from_stop, const Stop* to_stop) const;
 
@@ -34,7 +48,7 @@ public:
 
 private:
     const TransportCatalogue& db_;
-    const RoutingSettings routing_settings_;
+    RoutingSettings routing_settings_;
     graph::DirectedWeightedGraph<double> graph_;
     graph::Router<double>* router_ptr_ = nullptr;
     std::map<std::string, graph::VertexId> stop_ids_;

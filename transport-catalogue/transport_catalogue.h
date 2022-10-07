@@ -54,6 +54,12 @@ public:
     const std::unordered_map<std::string_view, const Bus*>& GetAllBuses() const;
 
     const std::unordered_map<std::string_view, const Stop*>& GetAllStops() const;
+    
+    const std::deque<Bus>& GetAllRawBuses() const;
+
+    const std::deque<Stop>& GetAllRawStops() const;
+
+    const std::unordered_map<std::pair<const Stop*, const Stop*>, size_t, detail::PairHash>& GetDistancesBetweenStops() const;
 
 private:
 

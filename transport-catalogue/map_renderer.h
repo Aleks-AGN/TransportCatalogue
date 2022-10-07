@@ -10,6 +10,7 @@
 #include <optional>
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 namespace renderer {
 
@@ -101,6 +102,8 @@ public:
     MapRenderer() = default;
 
     void SetRenderSettings(RenderSettings settings);
+
+    const RenderSettings& GetRenderSettings() const;
 
     void PrintRenderSettings() const;
     
